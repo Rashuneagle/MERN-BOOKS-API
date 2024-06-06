@@ -8,17 +8,13 @@ const { authMiddleware } = require('./utils/auth');
 const app = express();
 const PORT = process.env.PORT || 3001;
 
-const server = new ApolloServer({
-  typeDefs,
-  resolvers,
-  context: ({ req }) => {
-    const token = req.headers.authorization || '';
-    const user = authMiddleware(token);
-    return { user };
-  },
-});
-
 async function startServer() {
+  const server = new ApolloServer({
+    typeDefs,
+    resolvers,
+    context: ({ req }) => authMiddleware({ req }),
+  });
+
   await server.start();
   server.applyMiddleware({ app });
 

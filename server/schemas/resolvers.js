@@ -9,7 +9,19 @@ const resolvers = {
         return User.findOne({ _id: context.user._id }).populate('savedBooks');
       }
       throw new AuthenticationError('Not logged in');
+
     },
+    searchBooks: async (parent, { query }) => {
+      const response = await fetch(`https://www.googleapis.com/books/v1/volumes?q=${query}`);
+      const data = await response.json();
+      return data.items.map((book) => ({
+        bookId: book.id,
+        authors: book.volumeInfo.authors || ['No author to display'],
+        title: book.volumeInfo.title,
+        description: book.volumeInfo.description,
+        image: book.volumeInfo.imageLinks?.thumbnail || '',
+      })); 
+    }
   },
 
   Mutation: {
@@ -41,7 +53,7 @@ const resolvers = {
           { _id: context.user._id },
           { $addToSet: { savedBooks: bookData } },
           { new: true, runValidators: true }
-        );
+        ).populate('savedBooks');
         return updatedUser;
       }
       throw new AuthenticationError('Not logged in');
@@ -50,9 +62,9 @@ const resolvers = {
       if (context.user) {
         const updatedUser = await User.findByIdAndUpdate(
           { _id: context.user._id },
-          { $pull: { savedBooks: { bookId: bookId } } },
+          { $pull: { savedBooks: { bookId } } },
           { new: true }
-        );
+        ).populate('savedBooks');
         return updatedUser;
       }
       throw new AuthenticationError('Not logged in');
