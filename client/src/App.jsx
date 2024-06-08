@@ -11,7 +11,7 @@ import Navbar from './components/Navbar';
 import { Outlet } from 'react-router-dom'
 
 const httpLink = createHttpLink({
-  uri: 'http://localhost:3001/graphql', // Ensure this points to the correct server and port
+  uri: 'https://mern-books-api-render.onrender.com/graphql', // Ensure this points to the correct server and port
 });
 
 // Construct request middleware that will attach the JWT token to every request as an `authorization` header
