@@ -4,11 +4,10 @@
   "description": "",
   "main": "server/server.js",
   "scripts": {
-    "start": "node server.js",
+    "start": "vite",
     "develop": "concurrently \"cd server && npm run watch\" \"cd client && npm run dev\"",
     "install": "cd server && npm i && cd ../client && npm i",
-    "watch": "nodemon server.js",
-    "build": "cd client && npm run build",
+    "build": "vite build",
     "render-build": "npm install && npm run build",
     "dev": "vite"
   },
@@ -23,4 +22,3 @@
     "apollo-server-express": "^3.13.0",
     "graphql": "^16.8.1"
   }
-}
