@@ -6,7 +6,7 @@ const { typeDefs, resolvers } = require('./schemas');
 const { authMiddleware } = require('./utils/auth');
 
 const app = express();
-const port = process.env.PORT || 3001;
+const PORT = process.env.PORT || 10000;
 
 const server = new ApolloServer({
   typeDefs,
@@ -21,23 +21,18 @@ async function startServer() {
   app.use(express.urlencoded({ extended: false }));
   app.use(express.json());
 
-  // Serve static files from the React app
   if (process.env.NODE_ENV === 'production') {
     app.use(express.static(path.join(__dirname, '../client/dist')));
 
     app.get('*', (req, res) => {
       res.sendFile(path.join(__dirname, '../client/dist/index.html'));
     });
-  } else {
-    app.get('/', (req, res) => {
-      res.send('API Running');
-    });
   }
 
   db.once('open', () => {
-    app.listen(port, () => {
-      console.log(`API server running on port ${port}!`);
-      console.log(`Use GraphQL at http://localhost:${port}${server.graphqlPath}`);
+    app.listen(PORT, '0.0.0.0', () => {
+      console.log(`API server running on port ${PORT}!`);
+      console.log(`Use GraphQL at http://localhost:${PORT}${server.graphqlPath}`);
     });
   });
 }
